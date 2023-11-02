@@ -60,8 +60,6 @@ public static class Exemplo
         //processaPagamentoParceladoComJuros.ProcessarPagamento(cartaoComJuros, 300, 2);
         //processaPagamentoParceladoComJuros.ProcessarPagamento(cartaoComJuros, 300, 10, 0.8);
 
-
-
         // FormaPagamento x IPagamento
         IPagamento[] pagamentos = new[]
         {
@@ -77,23 +75,19 @@ public static class Exemplo
             var pagamento = pagamentos[i];
 
             if (i % 2 > 0)
-            {
-                var random = new Random();
-                pagamento.Pagar(random.Next(1000)+10);
-            }
+                pagamento.Pagar(new Random().Next(1000) + 10);
 
             ExibirDadosDoPagamento(pagamento);
         }
-
-    
     }
 
     private static void ExibirDadosDoPagamento(IPagamento pagamento)
     {
         var tipo = pagamento.GetType();
-        Console.WriteLine($"Pagamento do tipo: {tipo.Name}");
+        var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+        var propriedades = tipo.GetProperties(flags);
 
-        var propriedades = tipo.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        Console.WriteLine($"Pagamento do tipo: {tipo.Name}");
 
         foreach (var prop in propriedades.Where(x => !x.Name.Equals("Pago")))
         {
@@ -103,8 +97,7 @@ public static class Exemplo
         var propriedadePago = propriedades.Where(x => x.Name.Equals("Pago")).First();
         var pago = (bool)propriedadePago.GetValue(pagamento);
 
-        Console.WriteLine(pago? "Está pago" : "Não está pago");
-
+        Console.WriteLine(pago ? "Está pago" : "Não está pago");
         Console.WriteLine(Environment.NewLine);
     }
 }
